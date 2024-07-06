@@ -20,7 +20,6 @@ export const createBubbleGumTrees = async (wallet: any) => {
 
   umi.use(walletAdapterIdentity(wallet));
 
-  // ツリーを作成　ここから
   const merkleTree = generateSigner(umi);
 
   const builder = await createTree(umi, {
@@ -31,9 +30,7 @@ export const createBubbleGumTrees = async (wallet: any) => {
 
   await builder.sendAndConfirm(umi);
   console.log("asset =>", merkleTree.publicKey.toString());
-  // ツリーを作成　ここから
 
-  // ツリーを取得 ここから
   const merkleTreeAccount = await fetchMerkleTree(umi, merkleTree.publicKey);
   console.log("merkleTreeAccount =>", merkleTreeAccount);
 
@@ -41,9 +38,7 @@ export const createBubbleGumTrees = async (wallet: any) => {
     merkleTree: merkleTree.publicKey,
   });
   console.log("treeConfig =>", treeConfig);
-  // ツリーを取得 ここまで
 
-  // NFTを作成 ここから
   const { signature } = await mintV1(umi, {
     leafOwner: wallet.publicKey,
     merkleTree: merkleTree.publicKey,
@@ -57,9 +52,7 @@ export const createBubbleGumTrees = async (wallet: any) => {
       ],
     },
   }).sendAndConfirm(umi);
-  // NFTを作成 ここまで
 
-  // NFTを取得 ここから
   const leaf: LeafSchema = await parseLeafFromMintV1Transaction(umi, signature);
   const assetId = findLeafAssetIdPda(umi, {
     merkleTree: merkleTree.publicKey,
@@ -67,7 +60,6 @@ export const createBubbleGumTrees = async (wallet: any) => {
   });
 
   console.log("assetId =>", assetId);
-  // NFTを取得 ここまで
 
   return merkleTree.publicKey.toString();
 };
