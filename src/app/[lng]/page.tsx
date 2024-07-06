@@ -4,10 +4,7 @@ import React, { useState } from "react";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { useTranslation } from "@/i18n/client";
-import {
-  createNFTUsingAkord,
-  createBubbleGumTrees,
-} from "../../components/utils";
+import { createBubbleGumTrees } from "../../components/utils";
 import { PageParams } from "../../types/params";
 import { ClipLoader } from "react-spinners"; // スピナーをインポート
 
@@ -23,12 +20,7 @@ const MyPage: React.FC<PageParams> = ({ params: { lng } }) => {
     description: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNftData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const createNFT = async () => {
+  const createTree = async () => {
     try {
       if (!wallet) {
         console.error("Wallet not connected");
@@ -37,17 +29,7 @@ const MyPage: React.FC<PageParams> = ({ params: { lng } }) => {
 
       setIsLoading(true); // ボタンを押した後にローディング状態を設定
 
-      // const data = {
-      //   name: nftData.name,
-      //   symbol: nftData.symbol,
-      //   description: nftData.description,
-      //   image:
-      //     "https://arweave.net/5PGFryeL2J8YkcehPQzEmgQCfD438F1Iws-ZcPFKwDg", // 固定された画像URL
-      //   attributes: [], // 他の属性が必要であれば追加してください
-      // };
-      // const tokenID = await createNFTUsingAkord(data, wallet); // Akordにデータを保存し、NFTを作成
       const tx = await createBubbleGumTrees(wallet);
-      console.log("tx =>", tx);
       const url = `https://explorer.solana.com/address/${tx}?cluster=devnet`;
       setExplorerURL(url); // エクスプローラのURLを状態に保存
     } catch (error) {
@@ -64,47 +46,9 @@ const MyPage: React.FC<PageParams> = ({ params: { lng } }) => {
   return (
     <div className="min-h-screen bg-kumogray flex items-center justify-center p-4">
       <div className="max-w-5xl w-full bg-white p-8 rounded-lg shadow-lg ">
-        <h1 className="text-3xl font-bold mb-6">{t("my_page.create_nft")}</h1>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            {t("my_page.nft_name")}
-          </label>
-          <input
-            name="name"
-            type="text"
-            value={nftData.name}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            {t("my_page.nft_symbol")}
-          </label>
-          <input
-            name="symbol"
-            type="text"
-            value={nftData.symbol}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            {t("my_page.nft_description")}
-          </label>
-          <input
-            name="description"
-            type="text"
-            value={nftData.description}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-
         <div className="flex justify-center mt-4">
           <button
-            onClick={createNFT}
+            onClick={createTree}
             className={`px-6 py-3 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 min-w-60 ${
               isLoading
                 ? "bg-gray-400 cursor-not-allowed"
@@ -118,16 +62,13 @@ const MyPage: React.FC<PageParams> = ({ params: { lng } }) => {
                 <span className="ml-2">{t("my_page.processing")}</span>
               </div>
             ) : (
-              t("my_page.issue_nft")
+              "Treeを作成"
             )}
           </button>
         </div>
 
         {explorerURL && (
           <>
-            <p className="mt-4 text-gray-700">
-              {t("my_page.nft_reflection_message")}
-            </p>
             <a
               href={explorerURL}
               target="_blank"
