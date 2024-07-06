@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@metaplex-foundation/digital-asset-standard-api": "^1.0.4",
     "@metaplex-foundation/mpl-core": "^1.0.1",
     "@metaplex-foundation/umi": "^0.9.1",
     "@metaplex-foundation/umi-bundle-defaults": "^0.9.1",

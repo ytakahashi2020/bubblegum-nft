@@ -39,27 +39,37 @@ export const createBubbleGumTrees = async (wallet: any) => {
   });
   console.log("treeConfig =>", treeConfig);
 
-  const { signature } = await mintV1(umi, {
-    leafOwner: wallet.publicKey,
-    merkleTree: merkleTree.publicKey,
-    metadata: {
-      name: "My Compressed NFT",
-      uri: "https://example.com/my-cnft.json",
-      sellerFeeBasisPoints: 500, // 5%
-      collection: none(),
-      creators: [
-        { address: umi.identity.publicKey, verified: false, share: 100 },
-      ],
-    },
-  }).sendAndConfirm(umi);
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+  try {
+    console.log("Attempting to mint V1...");
+    const { signature } = await mintV1(umi, {
+      leafOwner: wallet.publicKey,
+      merkleTree: merkleTree.publicKey,
+      metadata: {
+        name: "My Compressed NFT",
+        uri: "https://example.com/my-cnft.json",
+        sellerFeeBasisPoints: 500, // 5%
+        collection: none(),
+        creators: [
+          { address: umi.identity.publicKey, verified: false, share: 100 },
+        ],
+      },
+    }).sendAndConfirm(umi);
 
-  const leaf: LeafSchema = await parseLeafFromMintV1Transaction(umi, signature);
-  const assetId = findLeafAssetIdPda(umi, {
-    merkleTree: merkleTree.publicKey,
-    leafIndex: leaf.nonce,
-  });
+    console.log("Mint signature =>", signature);
+    const leaf: LeafSchema = await parseLeafFromMintV1Transaction(
+      umi,
+      signature
+    );
+    const assetId = findLeafAssetIdPda(umi, {
+      merkleTree: merkleTree.publicKey,
+      leafIndex: leaf.nonce,
+    });
 
-  console.log("assetId =>", assetId);
+    console.log("assetId =>", assetId);
+  } catch (error) {
+    console.error("Error during minting:", error);
+  }
 
   return merkleTree.publicKey.toString();
 };
